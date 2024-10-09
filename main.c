@@ -147,14 +147,13 @@ bool brute_dictionary(struct s_thread_data *data) {
 }
 
 int main(int argc, char **argv) {
-    const EVP_MD *evp_md;
+    const EVP_MD *evp_md = NULL;
     size_t max_len = 6;
     const char *default_hmac_alg = "sha256";
     g_alphabet = "eariotnslcudpmhgbfywkvxzjqEARIOTNSLCUDPMHGBFYWKVXZJQ0123456789";
     char *jwt = NULL;
     char *dictionary_file = NULL;
 
-    // Parse command line options
     int opt;
     while ((opt = getopt(argc, argv, "t:a:m:h:d:")) != -1) {
         switch (opt) {
@@ -198,6 +197,18 @@ int main(int argc, char **argv) {
             printf("Cannot initialize the default message digest %s, aborting\n", default_hmac_alg);
             return 1;
         }
+        printf("Using default HMAC algorithm: %s\n", default_hmac_alg);
+    }
+
+    printf("Parameters:\n");
+    printf("  JWT Token: %s\n", jwt);
+    printf("  Alphabet: %s\n", g_alphabet);
+    printf("  Max Length: %zu\n", max_len);
+    printf("  HMAC Algorithm: %s\n", EVP_MD_name(evp_md));
+    if (dictionary_file != NULL) {
+        printf("  Dictionary File: %s\n", dictionary_file);
+    } else {
+        printf("  Dictionary File: Not provided\n");
     }
 
     g_alphabet_len = strlen(g_alphabet);
